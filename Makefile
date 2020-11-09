@@ -1,3 +1,4 @@
+DNF=$(shell which dnf)
 YUM=$(shell which yum)
 SYSTEMCTL=$(shell which systemctl)
 CURL=$(shell which curl)
@@ -5,16 +6,19 @@ DOCKER_COMPOSE_VERSION=1.27.4
 DOCKER_COMPOSE_URL:="https://github.com/docker/compose/releases/download/$(DOCKER_COMPOSE_VERSION)/docker-compose-$(shell uname -s)-$(shell uname -m)"
 DOCKER_COMPOSE=/usr/local/bin/docker-compose
 
-.$(YUM):
-	$(YUM) update
-	$(YUM) upgrade
-	$(YUM) install -y yum-utils device-mapper-persistent-data lvm2
-	yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+init:
+	$(YUM) install -y dnf
 
-install: .$(YUM) install/docker install/docker-compose
+.$(DNF):
+	$(DNF) update
+	$(DNF) upgrade
+	$(DNF) install -y 'dnf-command(config-manager)'
+	$(DNF) config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+install: init .$(DNF) install/docker install/docker-compose
 
 install/docker:
-	$(YUM) install -y docker-ce docker-ce-cli containerd.io
+	$(DNF) install -y docker-ce docker-ce-cli containerd.io
 	$(SYSTEMCTL) start docker
 	$(SYSTEMCTL) enable docker
 
