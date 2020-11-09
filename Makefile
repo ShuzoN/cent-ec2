@@ -15,7 +15,8 @@ init:
 	$(DNF) install -y 'dnf-command(config-manager)'
 	$(DNF) config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
-install: init .$(DNF) install/docker install/docker-compose
+install: init .$(DNF)
+	$(MAKE) install/docker install/docker-compose
 
 install/docker:
 	$(DNF) install -y docker-ce docker-ce-cli containerd.io
