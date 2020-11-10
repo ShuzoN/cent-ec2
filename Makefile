@@ -7,11 +7,12 @@ DOCKER_COMPOSE_URL:="https://github.com/docker/compose/releases/download/$(DOCKE
 DOCKER_COMPOSE=/usr/local/bin/docker-compose
 
 init:
-	$(YUM) install -y dnf
+	which dnf || $(YUM) install -y dnf
+	$(DNF) install -y vim
 
 .$(DNF):
-	$(DNF) update
-	$(DNF) upgrade
+	$(DNF) -y update
+	$(DNF) -y upgrade
 	$(DNF) install -y 'dnf-command(config-manager)'
 	$(DNF) config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
